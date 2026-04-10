@@ -5,11 +5,13 @@ import Link from "next/link";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
 export default function Home() {
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
 
-  // Check if user is logged in
   useEffect(() => {
     const getUser = async () => {
       const { data } = await supabase.auth.getUser();
@@ -18,65 +20,88 @@ export default function Home() {
     getUser();
   }, []);
 
-  // Logout function
   const logout = async () => {
     await supabase.auth.signOut();
-    alert("Logged out successfully");
     setUser(null);
     router.push("/login");
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black-100">
-      {/* Title */}
-      <h1 className="text-4xl font-bold mb-10">🎓 Alumni Networking Portal</h1>
+    <div className="min-h-screen flex items-center justify-center bg-black text-white relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute w-[600px] h-[600px] bg-purple-600/20 blur-3xl rounded-full top-[-150px] left-[-150px]" />
+      <div className="absolute w-[500px] h-[500px] bg-blue-500/20 blur-3xl rounded-full bottom-[-150px] right-[-150px]" />
 
-      {/* Navigation */}
-      <div className="flex flex-col gap-4 w-64">
-        <Link href="/login">
-          <button className="w-full bg-blue-500 text-white py-2 rounded">
-            Login / Signup
-          </button>
-        </Link>
+      {/* Main Card */}
+      <Card className="w-[440px] p-8 bg-zinc-900/70 backdrop-blur-2xl border border-zinc-700 shadow-2xl rounded-2xl z-10">
+        <CardContent className="flex flex-col items-center gap-6">
+          {/* Title */}
+          <h1 className="text-4xl font-bold text-white text-center drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
+            Alumni Portal
+          </h1>
 
-        <Link href="/profile">
-          <button className="w-full bg-green-500 text-white py-2 rounded">
-            Profile
-          </button>
-        </Link>
+          {/* Subtitle */}
+          <p className="text-zinc-400 text-sm text-center">
+            Connect • Collaborate • Grow
+          </p>
 
-        <Link href="/search">
-          <button className="w-full bg-purple-500 text-white py-2 rounded">
-            Search Alumni
-          </button>
-        </Link>
+          {/* User Info */}
+          {user && (
+            <p className="text-xs text-zinc-500">Logged in as: {user.email}</p>
+          )}
 
-        <Link href="/messages">
-          <button className="w-full bg-yellow-500 text-white py-2 rounded">
-            Messaging
-          </button>
-        </Link>
+          {/* Buttons */}
+          <div className="flex flex-col gap-4 w-full mt-2">
+            {/* ✅ SHOW ONLY IF NOT LOGGED IN */}
+            {!user && (
+              <Link href="/login">
+                <Button className="w-full bg-white text-black font-semibold hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-white/30 hover:scale-[1.02]">
+                  Login / Signup
+                </Button>
+              </Link>
+            )}
 
-        <Link href="/events">
-          <button className="w-full bg-red-500 text-white py-2 rounded">
-            Events
-          </button>
-        </Link>
-      </div>
+            {/* Secondary Buttons */}
+            <Link href="/profile">
+              <Button className="w-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-purple-500/20 hover:scale-[1.02]">
+                Profile
+              </Button>
+            </Link>
 
-      {/* Logout Button (only if logged in) */}
-      {user && (
-        <button
-          onClick={logout}
-          className="bg-red text-white px-4 py-2 mb-6 rounded"
-        >
-          Logout
-        </button>
-      )}
+            <Link href="/search">
+              <Button className="w-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-purple-500/20 hover:scale-[1.02]">
+                Search Alumni
+              </Button>
+            </Link>
+
+            <Link href="/messages">
+              <Button className="w-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-purple-500/20 hover:scale-[1.02]">
+                Messages
+              </Button>
+            </Link>
+
+            <Link href="/events">
+              <Button className="w-full bg-zinc-800 hover:bg-zinc-700 transition-all duration-300 shadow-md hover:shadow-purple-500/20 hover:scale-[1.02]">
+                Events
+              </Button>
+            </Link>
+          </div>
+
+          {/* Logout */}
+          {user && (
+            <Button
+              onClick={logout}
+              className="w-full mt-3 bg-red-600 hover:bg-red-500 transition-all duration-300 shadow-md hover:shadow-red-500/30 hover:scale-[1.02]"
+            >
+              Logout
+            </Button>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Footer */}
-      <p className="mt-10 text-sm text-gray-500">
-        Built using Next.js + Supabase
+      <p className="absolute bottom-4 text-xs text-zinc-600">
+        Built with Next.js + Supabase
       </p>
     </div>
   );
